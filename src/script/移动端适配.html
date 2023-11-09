@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <title>Document</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #test {
+            width: 8rem;
+            height: 8rem;
+            background: pink;
+            text-align: center;
+            line-height: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test">test</div>
+    <script type="text/javascript">
+        //rem适配
+        //rem适配原理：改变了一个元素在不同设备上占据的css像素的个数
+        /*rem适配的优缺点
+            优点:没有破坏完美视口
+            缺点:px值到rem的转换太复杂*/
+
+        (function () {
+            var styleNode = document.createElement("style");
+            /* 当不除以16时此时1em便占据视口宽度,
+            那么我们给其页面中的元素设置宽高基本都会小于1rem,浏览器的计算并不会特别精准容易出现偏差 */
+            // var w = document.documentElement.clientWidth;
+            /* 所以此时我们除以16,使得16rem便占据了满屏,对于页面中大多数元素的rem都会超过1rem */
+            var w = document.documentElement.clientWidth / 16;//获取视口大小
+            /* 设置此时根元素的fontsize，向html的style样式中添加font-size属性*/
+            styleNode.innerHTML = "html{font-size:" + w + "px!important}";
+            //向head标签中添加style标签，其中包含html{font-size:w;}
+            document.head.appendChild(styleNode);
+
+            // 设计图下：px值到rem的转换
+            function px2rem(v) {
+                /* 此时我们的750为设计图大小,具体值应该跟随设计图大小来进行设置 */
+                /* 对于750/16rem的逻辑为:因为16rem为占据页面的总宽,所以750(设计图的宽度)/16rem得出1rem与设计图的等比 */
+                const scale = 750 / 16
+                return v / scale
+            };
+            // rem值到实际px值的转换
+            function rem2px(v) {
+                v = parseFloat(v);
+                return v * w;
+            };
+            // 实际px值到rem的转换
+            function realpx2rem(v) {
+                return v / w
+            }
+            const r = px2rem(375)
+            const p = rem2px(r)
+            console.log('px2rem', r + 'rem')
+            console.log('rem2px', p + 'px')
+            console.log('realpx2rem', realpx2rem(p) + 'rem')
+        })()
+    </script>
+</body>
+
+</html>
